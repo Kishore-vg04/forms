@@ -1,0 +1,45 @@
+*{
+    box-sizing: border-box;
+    top: 0px;
+    margin: 0px;
+    font-weight: bold;
+}
+/* body{
+    background-color: rgb(191, 229, 241);
+} */
+h1{
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.formfield{
+    display: flex;
+    justify-content: center;
+    font-size: larger;
+}
+form{
+    border: 1px solid rgb(0, 0, 0);
+    padding: 20px;
+    border-radius: 20px;
+    background-color: rgba(94, 8, 223, 0.1);
+}
+form input{
+    padding: 6px;
+    width: 178px;
+}
+table tr td{
+    padding: 7px;
+    padding-left: 70px;
+}
+table button{
+    padding: 10px 20px;
+    border-radius: 4px;
+    background-color: rgb(34, 156, 232);    
+}
+form select{
+    padding: 6px;
+    width: 178px;
+}
+form textarea{
+    width: 178px;
+}
