@@ -14,7 +14,7 @@ if ($conn->connect_error) {
     die(json_encode(["error" => "Database connection failed: " . $conn->connect_error]));
 }
 
-$sql = "SELECT name, rollNo, fromDate, toDate, reason FROM std_info";
+$sql = "SELECT name, rollno, fromdate, todate, reason FROM std_info";
 $result = $conn->query($sql);
 
 if (!$result) {

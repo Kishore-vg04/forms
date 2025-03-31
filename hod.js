@@ -40,8 +40,8 @@ document.addEventListener("DOMContentLoaded", function () {
         container.appendChild(card);
     });
 
-    // Force refresh to ensure latest data loads
-    setTimeout(() => {
-        window.location.reload();
-    }, 1000); // Refresh after 1 second to load data
+
+    // setTimeout(() => {
+    //     window.location.reload();
+    // }, 1000);
 });

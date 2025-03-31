@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "student_management";
+$dbname = "automation";
 
 try {
     // Create connection
@@ -44,7 +44,7 @@ try {
     $reason = htmlspecialchars($_POST['reason']);
 
     // Prepare and bind
-    $stmt = $conn->prepare("INSERT INTO student_forms (name, department, year, section, rollno, fromdate, todate, mode, reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO std_info (name, department, year, section, rollno, fromdate, todate, mode, reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
     if (!$stmt) {
         throw new Exception("Prepare failed: " . $conn->error);
     }

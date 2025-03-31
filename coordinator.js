@@ -27,9 +27,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 <div class="container">
                     <table class="detail-table">
                         <tr><td><b>Name:</b> ${student.name}</td></tr>
-                        <tr><td><b>Roll No:</b> ${student.rollNo}</td></tr>
-                        <tr><td><b>From Date:</b> ${student.fromDate}</td></tr>
-                        <tr><td><b>To Date:</b> ${student.toDate}</td></tr>
+                        <tr><td><b>Roll No:</b> ${student.rollno}</td></tr>
+                        <tr><td><b>From Date:</b> ${student.fromdate}</td></tr>
+                        <tr><td><b>To Date:</b> ${student.todate}</td></tr>
                         <tr><td><b>Reason:</b> ${student.reason}</td></tr>
                     </table>
                     <div class="approval-status">
