@@ -1,13 +1,9 @@
 document.addEventListener("DOMContentLoaded", async function () {
     try {
         const response = await fetch("fetch_students.php");
-        
-        if (!response.ok) {
-            throw new Error("HTTP error! Status: " + response.status);
-        }
+        if (!response.ok) throw new Error("HTTP error! Status: " + response.status);
 
         const students = await response.json();
-        
         if (students.error) {
             console.error("Server Error:", students.error);
             return;
@@ -19,7 +15,12 @@ document.addEventListener("DOMContentLoaded", async function () {
             return;
         }
 
-        students.forEach((student, index) => {
+        students.forEach((student) => {
+            // if(student.approved_by_coordinator == -1){
+            //     button.closest(".card1").remove();
+            // }
+            if (student.approved_by_coordinator == 1) return; // Skip already approved requests
+
             const card = document.createElement("div");
             card.classList.add("card1");
 
@@ -33,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                         <tr><td><b>Reason:</b> ${student.reason}</td></tr>
                     </table>
                     <div class="approval-status">
-                        <button class="approve" onclick="approveRequest(${index})">Approve</button>
+                        <button class="approve" onclick="approveRequest(${student.id})">Approve</button>
                         <button class="disapprove" onclick="toggleRemark(this)">Disapprove</button>
                     </div>
                 </div>
@@ -53,28 +54,58 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 });
 
+// Function to approve request and update DB
+async function approveRequest(studentId) {
+    try {
+        const response = await fetch("/automation/backend/approve_request.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: studentId }),
+        });
 
+        const result = await response.json();
+        if (result.success) {
+            alert("Request approved and sent to HOD for final approval!");
+            window.location.reload();
+        } else {
+            alert("Approval failed: " + result.error);
+        }
+    } catch (error) {
+        console.error("Error approving request:", error);
+    }
+}
+
+// Toggle remark input visibility
 function toggleRemark(button) {
     const remarkSection = button.closest(".card1").querySelector(".remark-content");
     remarkSection.style.display = remarkSection.style.display === "none" ? "block" : "none";
 }
 
-function approveRequest(index) {
-    let approvedRequests = JSON.parse(localStorage.getItem("approvedRequests")) || [];
+// Handle disapproval
+async function disapproveRequest(button, studentId) {
+    const remarkInput = button.closest(".remark-content").querySelector(".inputs");
+    const remark = remarkInput.value.trim();
 
-    fetch("fetch_students.php")
-        .then((response) => response.json())
-        .then((students) => {
-            approvedRequests.push(students[index]); // Store approved request
+    if (!remark) {
+        alert("Please enter a reason for disapproval.");
+        return;
+    }
 
-            localStorage.setItem("approvedRequests", JSON.stringify(approvedRequests));
+    try {
+        const response = await fetch("/automation/backend/disapprove_request.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: studentId, reason: remark }),
+        });
 
-            console.log("Approved Requests Saved:", approvedRequests); // Debugging
-
-            document.getElementsByClassName("card1")[index].remove();
-
-            alert("Request approved and sent to HOD for final approval!");
-        })
-        .catch((error) => console.error("Error approving request:", error));
+        const result = await response.json();
+        if (result.success) {
+            alert("Request disapproved successfully!");
+            button.closest(".card1").remove(); // Remove the card from UI
+        } else {
+            alert("Disapproval failed: " + result.error);
+        }
+    } catch (error) {
+        console.error("Error disapproving request:", error);
+    }
 }
-

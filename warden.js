@@ -9,17 +9,18 @@ document.addEventListener("DOMContentLoaded", async function () {
             return;
         }
 
-        const container = document.getElementById("hod-container");
+        const container = document.getElementById("warden-container");
         container.innerHTML = ""; // Clear previous content
 
-        const approvedStudents = students.filter(student => student.approved_by_coordinator == 1);
+        // Filter students approved by HOD but not yet finalized
+        const pendingWardenApproval = students.filter(student => student.approved_by_hod == 1 && student.final_approval == 0);
 
-        if (approvedStudents.length === 0) {
-            container.innerHTML = "<p>No approved requests available.</p>";
+        if (pendingWardenApproval.length === 0) {
+            container.innerHTML = "<p>No pending requests for Warden approval.</p>";
             return;
         }
 
-        approvedStudents.forEach((student) => {
+        pendingWardenApproval.forEach((student) => {
             const card = document.createElement("div");
             card.classList.add("card1");
 
@@ -60,10 +61,10 @@ function toggleRemark(button) {
     remarkSection.style.display = remarkSection.style.display === "none" ? "block" : "none";
 }
 
-// ✅ HOD Approval Logic
+// ✅ Final approval by Warden
 async function finalApprove(studentId) {
     try {
-        const response = await fetch("/automation/backend/approve_request.php", {
+        const response = await fetch("/automation/backend/final_approve.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: studentId }),
@@ -72,44 +73,12 @@ async function finalApprove(studentId) {
         const result = await response.json();
         if (result.success) {
             alert("Request approved successfully!");
-
-            // ✅ Fetch updated data from DB to check the mode
-            const checkResponse = await fetch(`/automation/backend/get_student.php?id=${studentId}`);
-            const studentData = await checkResponse.json();
-
-            if (studentData.mode.toLowerCase() === "hosteller") {
-                // ✅ Transfer the card to the Warden Page
-                transferToWarden(studentId);
-            } else {
-                // ✅ Remove from HOD UI
-                document.querySelector(`.approve[data-id='${studentId}']`)?.closest(".card1")?.remove();
-            }
+            document.querySelector(`.approve[data-id='${studentId}']`)?.closest(".card1")?.remove();
         } else {
             alert("Approval failed: " + result.error);
         }
     } catch (error) {
         console.error("Error approving request:", error);
-    }
-}
-
-// ✅ Transfer Hosteller's Request to Warden Page
-async function transferToWarden(studentId) {
-    try {
-        const response = await fetch("/automation/backend/transfer_to_warden.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: studentId }),
-        });
-
-        const result = await response.json();
-        if (result.success) {
-            alert("Request transferred to Warden!");
-            window.location.href = "warden.html"; // Redirect to Warden Page
-        } else {
-            alert("Transfer failed: " + result.error);
-        }
-    } catch (error) {
-        console.error("Error transferring request:", error);
     }
 }
 

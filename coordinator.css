@@ -1,3 +1,5 @@
+/* common to both coordinator and hod style */
+
 *{
     box-sizing: border-box;
     top: 0px;
@@ -39,21 +41,4 @@ button{
 }
 .disapprove{
     background-color: rgb(239, 53, 53);
-}
-.remark-content{
-    display: flex;
-    justify-content:space-evenly;
-}
-.disapproval-reason{
-    display: flex;
-}
-.remark-reason input{
-    padding: 6px;
-    border-radius: 4px;
-}
-.disapproval-reason button{
-    margin-left: 10px;
-}
-.remark-reason label,.remark-reason input,.disapproval-reason button{
-    display: none;
 }
